@@ -263,18 +263,33 @@ def render_rays(models,
         z_vals = torch.sort(torch.cat([z_vals, z_vals_], -1), -1)[0]
         xyz_fine = rays_o + rays_d * rearrange(z_vals, 'n1 n2 -> n1 n2 1')
 
-        model = models['fine']
-        if model.encode_appearance:
-            if 'a_embedded' in kwargs:
-                a_embedded = kwargs['a_embedded']
-            else:
-                a_embedded = embeddings['a'](ts)
-        output_transient = kwargs.get('output_transient', True) and model.encode_transient
-        if output_transient:
-            if 't_embedded' in kwargs:
-                t_embedded = kwargs['t_embedded']
-            else:
-                t_embedded = embeddings['t'](ts)
-        inference(results, model, xyz_fine, z_vals, test_time, **kwargs)
+        # model = models['fine']
+        # if model.encode_appearance:
+        #     if 'a_embedded' in kwargs:
+        #         a_embedded = kwargs['a_embedded']
+        #     else:
+        #         a_embedded = embeddings['a'](ts)
+        # output_transient = kwargs.get('output_transient', True) and model.encode_transient
+        # if output_transient:
+        #     if 't_embedded' in kwargs:
+        #         t_embedded = kwargs['t_embedded']
+        #     else:
+        #         t_embedded = embeddings['t'](ts)
+        # inference(results, model, xyz_fine, z_vals, test_time, **kwargs)
 
-    return results
+        z_vals, _ = torch.sort(torch.cat([z_vals, z_vals_], -1), -1)
+
+        xyz_fine_sampled = rays_o.unsqueeze(1) + \
+                           rays_d.unsqueeze(1) * z_vals.unsqueeze(2)
+                           # (N_rays, N_samples+N_importance, 3)
+
+        model_fine = models[1]
+        rgb_fine, depth_fine, weights_fine = \
+            inference(model_fine, embedding_xyz, xyz_fine_sampled, rays_d,
+                      dir_embedded, z_vals, weights_only=False)
+
+        result['rgb_fine'] = rgb_fine
+        result['depth_fine'] = depth_fine
+        result['opacity_fine'] = weights_fine.sum(1)
+
+    return result

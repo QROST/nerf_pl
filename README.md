@@ -1,9 +1,43 @@
 # nerf_pl
 
 Unofficial implementation of [NeRF-W](https://nerf-w.github.io/) (NeRF in the wild) using pytorch ([pytorch-lightning](https://github.com/PyTorchLightning/pytorch-lightning)). I try to reproduce (some of) the results on the lego dataset (Section D). Training on [Phototourism real images](https://github.com/ubc-vision/image-matching-benchmark) (as the main content of the paper) has also passed. Please read the following sections for the results.
+### Update: NVIDIA open-sourced a lightning-fast version of NeRF: [NGP](https://github.com/NVlabs/instant-ngp). I re-implemented in pytorch [here](https://github.com/kwea123/ngp_pl). This version is ~100x faster than this repo with also better quality!
+
+### Update: an improved [NSFF](https://www.cs.cornell.edu/~zl548/NSFF/) implementation to handle dynamic scene is [open](https://github.com/kwea123/nsff_pl)!
+
+### Update: [NeRF-W](https://nerf-w.github.io/) (NeRF in the Wild) implementation is added to [nerfw](https://github.com/kwea123/nerf_pl/tree/nerfw) branch!
+
+### Update: The lastest code (using the latest libraries) will be updated to [dev](https://github.com/kwea123/nerf_pl/tree/dev) branch. The master branch remains to support the colab files. If you don't use colab, it is recommended to switch to dev branch. Only issues of the dev and nerfw branch will be considered currently.
 
 The code is largely based on NeRF implementation (see master or dev branch), the main difference is the model structure and the rendering process, which can be found in the two files under `models/`.
 
+Unofficial implementation of [NeRF](https://arxiv.org/pdf/2003.08934.pdf) (Neural Radiance Fields) using pytorch ([pytorch-lightning](https://github.com/PyTorchLightning/pytorch-lightning)). This repo doesn't aim at reproducibility, but aim at providing a simpler and faster training procedure (also simpler code with detailed comments to help to understand the work). Moreover, I try to extend much more opportunities by integrating this algorithm into game engine like Unity.
+
+Official implementation: [nerf](https://github.com/bmild/nerf) .. Reference pytorch implementation: [nerf-pytorch](https://github.com/yenchenlin/nerf-pytorch)
+
+### Recommend to read: A detailed NeRF extension list: [awesome-NeRF](https://github.com/yenchenlin/awesome-NeRF)
+
+## :milky_way: Features
+
+* Multi-gpu training: Training on 8 GPUs finishes within 1 hour for the synthetic dataset!
+* [Colab](#mortar_board-colab) notebooks to allow easy usage!
+* [Reconstruct](#ribbon-mesh) **colored** mesh!
+* [Mixed Reality](https://youtu.be/S5phWFTs2iM) in Unity!
+* [REAL TIME volume rendering](https://youtu.be/w9qTbVzCdWk) in Unity!
+* [Portable Scenes](#portable-scenes) to let you play with other people's scenes!
+
+### You can find the Unity project including mesh, mixed reality and volume rendering [here](https://github.com/kwea123/nerf_Unity)! See [README_Unity](README_Unity.md) for generating your own data for Unity rendering!
+
+## :beginner: Tutorial
+
+### What can NeRF do?
+<img src="https://user-images.githubusercontent.com/11364490/82124460-1ccbbb80-97da-11ea-88ad-25e22868a5c1.png" style="max-width:100%">
+
+### Tutorial videos
+<a href="https://www.youtube.com/playlist?list=PLDV2CyUo4q-K02pNEyDr7DYpTQuka3mbV">
+<img src="https://user-images.githubusercontent.com/11364490/80913471-d5781080-8d7f-11ea-9f72-9d68402b8271.png">
+</a>
+   
 # :computer: Installation
 
 ## Hardware
@@ -198,3 +232,23 @@ Use [eval.py](eval.py) ([example](https://github.com/kwea123/nerf_pl/releases/ta
 
 *  Phototourism evaluation
     *  To evaluate the results on the testing set, they train on the left half of the image and evaluate on the right half (to train the embedding of the test images). I didn't perform this additional training, I only evaluated on the training images. It should be easy to implement this.
+We can incorporate *ray tracing* techniques into the volume rendering pipeline, and realize realistic scene editing (following is the `materials` scene with an object removed, and a mesh is inserted and rendered with ray tracing). The code **will not** be released.
+
+![add](https://user-images.githubusercontent.com/11364490/90312710-92face00-df41-11ea-9eea-10f24849b407.gif)
+![add2](https://user-images.githubusercontent.com/11364490/90360796-92744b80-e097-11ea-859d-159aa2519375.gif)
+
+With my integration in Unity, I can realize realistic mixed reality photos (note my character casts shadow on the scene, **zero** post- image editing required):
+![defer](https://user-images.githubusercontent.com/11364490/140264589-295acebe-8ace-4d61-b871-26eb8ae10ab0.png)
+![defer2](https://user-images.githubusercontent.com/11364490/140264596-59daebe5-b88d-48e7-82bd-5ccaaff2283f.png)
+BTW, I would like to visit the museum one day...
+
+# :book: Citation
+If you use (part of) my code or find my work helpful, please consider citing
+```
+@misc{queianchen_nerf,
+  author={Quei-An, Chen},
+  title={Nerf_pl: a pytorch-lightning implementation of NeRF},
+  url={https://github.com/kwea123/nerf_pl/},
+  year={2020},
+}
+```
